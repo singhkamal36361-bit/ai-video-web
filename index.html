@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3D Cartoon AI</title>
+    <style>
+        body { font-family: Arial; text-align: center; background: #f0f0f0; }
+        .container { margin-top: 50px; padding: 20px; }
+        input { padding: 10px; width: 80%; border-radius: 5px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text to 3D Cartoon AI</h1>
+        <input type="text" id="prompt" placeholder="Enter your story here...">
+        <br><br>
+        <button onclick="generateVideo()">Generate 3D Video</button>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        function generateVideo() {
+            let text = document.getElementById('prompt').value;
+            if(text == "") { alert("Please enter some text!"); return; }
+            document.getElementById('status').innerText = "AI is generating your 3D video... Please wait.";
+            // Yahan baad mein AI API link hogi
+        }
+    </script>
+</body>
+</html>
