@@ -1,29 +1,71 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>3D Cartoon AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D AI Video Maker</title>
     <style>
-        body { font-family: Arial; text-align: center; background: #f0f0f0; }
-        .container { margin-top: 50px; padding: 20px; }
-        input { padding: 10px; width: 80%; border-radius: 5px; }
-        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: white; text-align: center; padding: 20px; }
+        .card { background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 500px; margin: auto; }
+        input { width: 90%; padding: 12px; margin: 15px 0; border-radius: 8px; border: none; font-size: 16px; }
+        button { background: #6200ee; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        button:hover { background: #3700b3; }
+        #videoPlayer { margin-top: 20px; width: 100%; display: none; border-radius: 10px; }
+        .loader { display: none; margin-top: 20px; color: #bb86fc; font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Text to 3D Cartoon AI</h1>
-        <input type="text" id="prompt" placeholder="Enter your story here...">
-        <br><br>
-        <button onclick="generateVideo()">Generate 3D Video</button>
-        <p id="status"></p>
+
+    <div class="card">
+        <h1>AI 3D Cartoon Generator</h1>
+        <p>Type anything to generate a video</p>
+        
+        <input type="text" id="promptInput" placeholder="e.g. A 3D cartoon astronaut dancing on Mars">
+        <br>
+        <button onclick="generateVideo()">Generate Video</button>
+
+        <div id="loading" class="loader">AI is thinking... It may take 1-2 minutes.</div>
+        
+        <video id="videoPlayer" controls></video>
     </div>
 
     <script>
-        function generateVideo() {
-            let text = document.getElementById('prompt').value;
-            if(text == "") { alert("Please enter some text!"); return; }
-            document.getElementById('status').innerText = "AI is generating your 3D video... Please wait.";
-            // Yahan baad mein AI API link hogi
+        async function generateVideo() {
+            const prompt = document.getElementById('promptInput').value;
+            const videoPlayer = document.getElementById('videoPlayer');
+            const loader = document.getElementById('loading');
+
+            if (!prompt) {
+                alert("Please enter a prompt!");
+                return;
+            }
+
+            loader.style.display = "block";
+            videoPlayer.style.display = "none";
+
+            try {
+                // Hum ModelScope ya zeroscope model ka use kar rahe hain (Free)
+                const response = await fetch(
+                    "api-inference.huggingface.co",
+                    {
+                        headers: { Authorization: "Bearer YOUR_API_KEY_HERE" }, // Yahan apni API key dalein
+                        method: "POST",
+                        body: JSON.stringify({ inputs: prompt }),
+                    }
+                );
+
+                const result = await response.blob();
+                const videoUrl = URL.createObjectURL(result);
+                
+                videoPlayer.src = videoUrl;
+                videoPlayer.style.display = "block";
+                loader.style.display = "none";
+            } catch (error) {
+                console.error(error);
+                alert("Error: AI server busy or key expired.");
+                loader.style.display = "none";
+            }
         }
     </script>
 </body>
